@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://cordova.apache.org/ns/plugins/1.0"
+           id="cordova-plugin-xt30-scanner"
+      version="0.0.1">
+    <name>XT30 Scanner</name>
+    <description>XT30 Scanner</description>
+    <license>MIT</license>
+    <keywords>cordova,barcode,qrcode,scanner,laser,xt30</keywords>
+    <repo>https://github.com/shineum/cordova-plugin-xt30-scanner.git</repo>
+
+    <js-module src="www/xt30scanner.js" name="XT30Scanner">
+        <clobbers target="cordova.plugins.xt30scanner" />
+    </js-module>
+
+    <!-- android -->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="XT30Scanner">
+                <param name="android-package" value="com.shineum.XT30Scanner"/>
+            </feature>
+        </config-file>
+        <source-file src="src/android/com.janam.device.XT30-v1.6.aar" target-dir="libs"/>
+        <source-file src="src/android/XT30Scanner.java" target-dir="src/com/shineum" />
+    </platform>
+</plugin>
