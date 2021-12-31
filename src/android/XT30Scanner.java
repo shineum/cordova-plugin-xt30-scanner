@@ -32,9 +32,20 @@ public class XT30Scanner extends CordovaPlugin {
 
     private Activity getActivity() { return this.cordova.getActivity(); }
 
+    private void resumeScanner() {
+		scanManager.openScanner();
+		enableScanIntentReceiver(true);
+    }
+
+    private void initScanner() {
+		resumeScanner();
+        configureScanSettings();
+    }
+
     @Override
     protected void pluginInitialize() {
         super.pluginInitialize();
+        initScanner();
     }    
 
     @Override
@@ -47,8 +58,7 @@ public class XT30Scanner extends CordovaPlugin {
     @Override
     public void onResume(boolean multitasking) {
 		super.onResume(multitasking);
-		scanManager.openScanner();
-		enableScanIntentReceiver(true);
+        resumeScanner();
     }
 
     // @Override
@@ -82,7 +92,53 @@ public class XT30Scanner extends CordovaPlugin {
                 getActivity().unregisterReceiver(scanIntentReceiver);
             scanIntentReceiver = null;
         }
-    }        
+    }
+
+	// Setup the scanner
+	void configureScanSettings()
+	{
+		scanManager.setResultMode(resultMode);
+
+		ScanSettings scanSettings = scanManager.getScanSettings();
+		scanSettings.read();
+
+		scanSettings.triggerMode = triggerMode;
+		scanSettings.triggerTimeout = 10000; // 10 sec
+		scanSettings.aimerOn = true;
+		scanSettings.illumOn = true;
+
+		Notifications notifications = scanSettings.getNotifications();
+
+		notifications.vibrate = true;
+		notifications.beep = true;
+
+		SymbologySettings symbologySettings = scanSettings.getSymbologySettings();
+		symbologySettings.enableAll(true);
+		scanSettings.write();
+	}    
+
+	void setBeep(boolean isBeep)
+	{
+		ScanSettings scanSettings = scanManager.getScanSettings();
+		scanSettings.read();
+
+		Notifications notifications = scanSettings.getNotifications();
+		notifications.beep = isBeep;
+
+        scanSettings.write();
+    }
+
+	void setTriggerMode(TriggerMode triggerMode)
+	{
+        this.triggerMode = triggerMode;
+
+		ScanSettings scanSettings = scanManager.getScanSettings();
+		scanSettings.read();
+
+        scanSettings.triggerMode = this.triggerMode;
+
+        scanSettings.write();
+    }
 
 	// when using ResultMode.INTENT, use a BroadcastHandler
 	private class ScanIntentReceiver extends BroadcastReceiver
@@ -109,6 +165,7 @@ public class XT30Scanner extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+
         if (action.equals("set")) {
 
             this.callbackContext = callbackContext;
@@ -127,10 +184,22 @@ public class XT30Scanner extends CordovaPlugin {
 
         } else if (action.equals("beep")) {
 
+            setBeep(args.getInt(0) == 1);
 
         } else if (action.equals("triggerMode")) {
 
-
+            switch(args.getInt(0)) {
+                case 0:
+                    setTriggerMode(TriggerMode.PULSE);
+                    break;
+                case 1:
+                    setTriggerMode(TriggerMode.CONTINUOUS);
+                    break;
+                case 2:
+                    setTriggerMode(TriggerMode.ONESHOT);
+                    break;
+            }
+            
         } else {
 
             return false;

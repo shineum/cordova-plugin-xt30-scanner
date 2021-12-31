@@ -67,6 +67,7 @@ Xt30Scanner.prototype.setTriggerMode = function (mode) {
 Xt30Scanner.prototype.TRIGGER_MODE = {
     ONESHOT            : 2
     , AUTO             : 0
+    , PULSE            : 0
     , CONTINUOUS       : 1
 };
 
