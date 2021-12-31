@@ -7,9 +7,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 
 import com.janam.device.XT30.scanner.DecodeResult;
 import com.janam.device.XT30.scanner.Notifications;
@@ -28,20 +30,23 @@ public class XT30Scanner extends CordovaPlugin {
     private TriggerMode triggerMode = TriggerMode.ONESHOT;
     private ScanIntentReceiver scanIntentReceiver = null;
 
+    private Activity getActivity() { return this.cordova.getActivity(); }
+
     @Override
     protected void pluginInitialize() {
+        super.pluginInitialize();
     }    
 
     @Override
     public void onPause(boolean multitasking) {
-		super.onPause();
+		super.onPause(multitasking);
 		enableScanIntentReceiver(false);
 		scanManager.closeScanner();
     }
 
     @Override
     public void onResume(boolean multitasking) {
-		super.onResume();
+		super.onResume(multitasking);
 		scanManager.openScanner();
 		enableScanIntentReceiver(true);
     }
@@ -59,22 +64,22 @@ public class XT30Scanner extends CordovaPlugin {
     // }
 
     //
-    static void enableScanIntentReceiver(boolean enable)
+    void enableScanIntentReceiver(boolean enable)
     {
-        if(enable && resultMode == ResultMode.INTENT)
+        if (enable && resultMode == ResultMode.INTENT)
         {
-            if(scanIntentReceiver == null)
+            if (scanIntentReceiver == null)
             {
                 scanIntentReceiver = new ScanIntentReceiver();
                 IntentFilter filter = new IntentFilter();
                 filter.addAction(scanManager.decodeIntentNames.getAction());
-                registerReceiver(scanIntentReceiver, filter);
+                getActivity().registerReceiver(scanIntentReceiver, filter);
             }
         }
         else
         {
-            if(scanIntentReceiver != null)
-                unregisterReceiver(scanIntentReceiver);
+            if (scanIntentReceiver != null)
+                getActivity().unregisterReceiver(scanIntentReceiver);
             scanIntentReceiver = null;
         }
     }        

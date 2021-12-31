@@ -16,11 +16,10 @@
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="XT30Scanner">
-                <param name="android-package" value="com.shineum.XT30Scanner"/>
+                <param name="android-package" value="com.shineum.XT30Scanner" />
             </feature>
         </config-file>
-        <framework src="src/android/build-plugin.gradle" custom="true" type="gradleReference" />
-        <source-file src="src/android/com.janam.device.XT30-v1.6.aar" target-dir="libs"/>
+        <lib-file src="src/android/com.janam.device.XT30-v1.6.jar"/>
         <source-file src="src/android/XT30Scanner.java" target-dir="src/com/shineum" />
     </platform>
 </plugin>
