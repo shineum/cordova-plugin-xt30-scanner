@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-xt30-scanner",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Laser scanner for XT30",
   "cordova": {
     "id": "cordova-plugin-xt30-scanner",
@@ -27,5 +27,9 @@
   "bugs": {
     "url": "https://github.com/shineum/cordova-plugin-xt30-scanner/issues"
   },
-  "homepage": "https://github.com/shineum/cordova-plugin-xt30-scanner#readme"
+  "homepage": "https://github.com/shineum/cordova-plugin-xt30-scanner#readme",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
 }
